@@ -39,7 +39,7 @@ SELECT T406_ISCRIZIONE
    AND T083_PROGR_EMISSIONE = T406_EMISSIONE
    AND T083_ISCRIZIONE      = T406_ISCRIZIONE
    AND T083_RATA            = T406_RATA
-   AND t406_emissione  in (0,56,70,71,72,82,83,90,91,93,98)
+   AND t406_emissione  in ({progressivi})
    AND (T406_IRPEFCORR_AGEV <> 0 OR T406_IRPEFACC_AGEV <> 0)
 """
 
@@ -60,8 +60,9 @@ def build_record75(iscrizione: str, rata: str, progr: str, row) -> str:
     return f"75{iscrizione}{rata}{progr}{campo1}{campo2}{campo3}{campo4}"
 
 
-def load_mappa(cursor, rata_emissione: str) -> dict:
-    cursor.execute(QUERY_BULK, rataEmissione=rata_emissione)
+def load_mappa(cursor, rata_emissione: str, progressivi: str) -> dict:
+    progressivi = sys.argv[progressivi + 1:]
+    cursor.execute(QUERY_BULK, rataEmissione=rata_emissione, progressivi=progressivi)
     rows = cursor.fetchall()
     print(f"  Righe restituite dalla query: {len(rows)}")
     # chiave: (iscrizione, emissione, rata) → valore: (IMPONCORR, IRPEFCORR, IMPONACC, IRPEFACC)
@@ -120,10 +121,11 @@ def process_file(mappa: dict, input_path: str, output_path: str) -> None:
 
 
 def main():
-    if len(sys.argv) != 2:
-        print(f"Uso: python {sys.argv[0]} <rataEmissione>  (es. 202603)")
+    if len(sys.argv) != 5 or sys.argv[1] != "-r" or sys.argv[3] != "-p":
+        print(f"Uso: python {sys.argv[0]} -r <rataEmissione> -p <valori emissione separati da virgola>  (es. -r 202603 -p 00,34,55,76)")
         sys.exit(1)
-    rata_emissione = sys.argv[1]
+    rata_emissione = sys.argv[2]
+    progressivi = sys.argv[4]
 
     input_dir  = config.INPUT_DIR
     output_dir = config.OUTPUT_DIR
@@ -143,7 +145,7 @@ def main():
     try:
         with connection.cursor() as cursor:
             print(f"Caricamento mappa Oracle (rataEmissione={rata_emissione})...")
-            mappa = load_mappa(cursor, rata_emissione)
+            mappa = load_mappa(cursor, rata_emissione, progressivi)
             print(f"{len(mappa)} iscrizioni caricate in mappa\n")
 
             for filename in sorted(files):
