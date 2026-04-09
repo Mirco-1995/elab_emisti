@@ -61,8 +61,9 @@ def build_record75(iscrizione: str, rata: str, progr: str, row) -> str:
 
 
 def load_mappa(cursor, rata_emissione: str, progressivi: str) -> dict:
-    progressivi = sys.argv[progressivi + 1:]
-    cursor.execute(QUERY_BULK, rataEmissione=rata_emissione, progressivi=progressivi)
+    valori_progressivi = [str(int(val.strip())) for val in progressivi.split(",") if val.strip()]
+    query_bulk = QUERY_BULK.format(progressivi=",".join(valori_progressivi))
+    cursor.execute(query_bulk, rataEmissione=rata_emissione)
     rows = cursor.fetchall()
     print(f"  Righe restituite dalla query: {len(rows)}")
     # chiave: (iscrizione, emissione, rata) → valore: (IMPONCORR, IRPEFCORR, IMPONACC, IRPEFACC)
