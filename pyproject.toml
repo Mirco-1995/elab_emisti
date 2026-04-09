@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "elab-emisti"
+version = "1.0.0"
+description = "Elaborazione record 75 per emi132"
+authors = ["Mirco Mazzolena <mirco.mazzolena2@dxc.com>"]
+readme = "README.md"
+packages = [{ include = "elab_emisti", from = "src" }]
+
+[tool.poetry.dependencies]
+python = ">=3.9"
+oracledb = "*"
+
+[tool.poetry.scripts]
+elab-emisti = "elab_emisti.main:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

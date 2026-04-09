@@ -23,7 +23,6 @@ import os
 import sys
 import shutil
 import oracledb
-import config
 
 
 QUERY_BULK = """
@@ -129,8 +128,11 @@ def main():
     rata_emissione = sys.argv[2]
     progressivi = sys.argv[4]
 
-    work_dir   = config.WORK_DIR
-    backup_dir = config.BACKUP_DIR
+    work_dir   = os.getenv("WORK_DIR", "/home6/pemco/202604/ordinaria/elaborazioni/files/mese/emi132/")
+    backup_dir = os.getenv("BACKUP_DIR", "/home6/pemco/202604/ordinaria/elaborazioni/files/mese/emi132/backup")
+    db_user = os.getenv("DB_USER", "sptowner")
+    db_password = os.getenv("DB_PASSWORD", "svilsnpc10$")
+    db_dsn = os.getenv("DB_DSN", "c1v-orc-snpc10.coll.tesoro.it:1521/SPTES.TESORO.IT")
     os.makedirs(backup_dir, exist_ok=True)
 
     files = [f for f in os.listdir(work_dir) if os.path.isfile(os.path.join(work_dir, f))]
@@ -138,11 +140,11 @@ def main():
         print(f"Nessun file trovato in: {work_dir}")
         return
 
-    print(f"Connessione a Oracle: {config.DB_DSN}")
+    print(f"Connessione a Oracle: {db_dsn}")
     connection = oracledb.connect(
-        user=config.DB_USER,
-        password=config.DB_PASSWORD,
-        dsn=config.DB_DSN,
+        user=db_user,
+        password=db_password,
+        dsn=db_dsn,
     )
     try:
         with connection.cursor() as cursor:
