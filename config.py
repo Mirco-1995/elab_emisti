@@ -5,9 +5,5 @@ DB_USER     = os.getenv("DB_USER", "sptowner")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "svilsnpc10$")
 DB_DSN      = os.getenv("DB_DSN", "c1v-orc-snpc10.coll.tesoro.it:1521/SPTES.TESORO.IT")  # es. "myhost:1521/MYSERVICE" oppure TNS alias
 
-# Cartelle di input e output (percorsi relativi o assoluti)
-# Tutti i file presenti in INPUT_DIR verranno elaborati;
-# i file di output avranno lo stesso nome nella cartella OUTPUT_DIR.
-#INPUT_DIR  = os.getenv("INPUT_DIR",  "./input")
-INPUT_DIR  = os.getenv("INPUT_DIR",  "/home6/pemco/202604/ordinaria/elaborazioni/files/mese/emi132/emi132-old")
-OUTPUT_DIR = os.getenv("OUTPUT_DIR", "/home6/pemco/202604/ordinaria/elaborazioni/files/mese/emi132/")
+WORK_DIR   = os.getenv("WORK_DIR",   "/home6/pemco/202604/ordinaria/elaborazioni/files/mese/emi132/")
+BACKUP_DIR = os.getenv("BACKUP_DIR", "/home6/pemco/202604/ordinaria/elaborazioni/files/mese/emi132/backup")

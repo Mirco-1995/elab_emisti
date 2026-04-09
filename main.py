@@ -21,6 +21,7 @@ Il record viene aggiunto solo se presente nella mappa caricata da Oracle.
 
 import os
 import sys
+import shutil
 import oracledb
 import config
 
@@ -128,13 +129,13 @@ def main():
     rata_emissione = sys.argv[2]
     progressivi = sys.argv[4]
 
-    input_dir  = config.INPUT_DIR
-    output_dir = config.OUTPUT_DIR
-    os.makedirs(output_dir, exist_ok=True)
+    work_dir   = config.WORK_DIR
+    backup_dir = config.BACKUP_DIR
+    os.makedirs(backup_dir, exist_ok=True)
 
-    files = [f for f in os.listdir(input_dir) if os.path.isfile(os.path.join(input_dir, f))]
+    files = [f for f in os.listdir(work_dir) if os.path.isfile(os.path.join(work_dir, f))]
     if not files:
-        print(f"Nessun file trovato in: {input_dir}")
+        print(f"Nessun file trovato in: {work_dir}")
         return
 
     print(f"Connessione a Oracle: {config.DB_DSN}")
@@ -150,10 +151,11 @@ def main():
             print(f"{len(mappa)} iscrizioni caricate in mappa\n")
 
             for filename in sorted(files):
-                input_path  = os.path.join(input_dir, filename)
-                output_path = os.path.join(output_dir, filename)
-                print(f"Elaborazione: {input_path} → {output_path}")
-                process_file(mappa, input_path, output_path)
+                input_path  = os.path.join(work_dir, filename)
+                backup_path = os.path.join(backup_dir, filename)
+                shutil.copy2(input_path, backup_path)
+                print(f"Elaborazione: {backup_path} → {input_path}")
+                process_file(mappa, backup_path, input_path)
         print("\nCompletato.")
     finally:
         connection.close()
