@@ -128,11 +128,11 @@ def main():
     rata_emissione = sys.argv[2]
     progressivi = sys.argv[4]
 
-    work_dir   = os.getenv("WORK_DIR", "/home6/pemco/202604/ordinaria/elaborazioni/files/mese/emi132/")
-    backup_dir = os.getenv("BACKUP_DIR", "/home6/pemco/202604/ordinaria/elaborazioni/files/mese/emi132/backup")
-    db_user = os.getenv("DB_USER", "sptowner")
-    db_password = os.getenv("DB_PASSWORD", "svilsnpc10$")
-    db_dsn = os.getenv("DB_DSN", "c1v-orc-snpc10.coll.tesoro.it:1521/SPTES.TESORO.IT")
+    work_dir = os.getenv("WORK_DIR")
+    backup_dir = os.getenv("BACKUP_DIR")
+    db_user = os.getenv("DB_USER")
+    db_password = os.getenv("DB_PASSWORD")
+    db_dsn = os.getenv("DB_DSN")
     os.makedirs(backup_dir, exist_ok=True)
 
     files = [f for f in os.listdir(work_dir) if os.path.isfile(os.path.join(work_dir, f))]
